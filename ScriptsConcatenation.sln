@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptsConcatenation", "ScriptsConcatenation\ScriptsConcatenation.csproj", "{D2552D03-0C99-4DF1-939E-85DC7D48026D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptsConcatenationTest", "ScriptsConcatenationTest\ScriptsConcatenationTest.csproj", "{C957A34A-53F6-4AF0-AB2B-172A2E484713}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D2552D03-0C99-4DF1-939E-85DC7D48026D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2552D03-0C99-4DF1-939E-85DC7D48026D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2552D03-0C99-4DF1-939E-85DC7D48026D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C957A34A-53F6-4AF0-AB2B-172A2E484713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C957A34A-53F6-4AF0-AB2B-172A2E484713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C957A34A-53F6-4AF0-AB2B-172A2E484713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C957A34A-53F6-4AF0-AB2B-172A2E484713}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

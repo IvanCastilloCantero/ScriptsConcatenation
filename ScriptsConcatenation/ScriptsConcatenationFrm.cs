@@ -1,42 +1,91 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ScriptsConcatenation
 {
     public partial class ScriptsConcatenationFrm : Form
-    {
-        public ScriptsConcatenationFrm()
+    {        
+        public ScriptsConcatenationFrm() 
         {
             InitializeComponent();
         }
 
-        private void btnBrowse_Click(object sender, EventArgs e)
+        private void BtnBrowse_Click(object sender, EventArgs e)
         {
             if (ScriptsBrowser.ShowDialog(this) == DialogResult.OK)
             {
-                string[] scripts = ScriptsBrowser.FileNames;
-                foreach (string s in scripts)
+                AddScriptsToListView();
+            }
+            EnableButtons();
+        }
+
+
+        private void EnableButtons()
+        {
+            this.BtnDelete.Enabled = true;
+            this.BtnConcat.Enabled = true;
+        }
+
+        private void AddScriptsToListView()
+        {
+            ConcatenationMethods concatenationMethods = new ConcatenationMethods();
+            concatenationMethods.AddScript(this.ScriptsBrowser.FileNames);
+            foreach (string scriptName in ScriptsBrowser.SafeFileNames)
+            {
+                ScriptsList.Items.Add(scriptName);
+            }
+        }
+
+        private void BtnDelete_Click(object sender, EventArgs e)
+        {
+            if (ScriptsList.SelectedItems.Count > 0)
+            {
+                DeleteSelectedElements();
+            } 
+            else
+            {
+                MessageBox.Show("Select at least one item in the list to delete it");
+            }
+            DisableDeleteConcatButtonWhenListDontHaveElements();
+        }
+
+        private void DisableDeleteConcatButtonWhenListDontHaveElements()
+        {
+            if (ScriptsList.Items.Count == 0)
+            {
+                BtnDelete.Enabled = false;
+                BtnConcat.Enabled = false;
+            }
+        }
+
+        private void DeleteSelectedElements()
+        {
+            foreach (ListViewItem listViewItem in ScriptsList.SelectedItems)
+            {
+                Script script = new Script
                 {
-                    if (s == scripts[0])
-                    {
-                        ScriptsPath.AppendText(s);
-                    } 
-                    else
-                    {
-                        ScriptsPath.AppendText(" | " + s);
-                    }
-                    
-                }
+                    ScriptName = listViewItem.Text
+                };
+                listViewItem.Remove();
+                ConcatenationMethods.DeleteSelectedItemsFromScriptList(script);
                 
             }
+        }
+
+        private void BtnConcat_Click(object sender, EventArgs e)
+        {
+            ConcatenationMethods.ConcatScripts();
+            BtnDownload.Enabled = true;
+            MessageBox.Show("Scripts concated succesfully");
+        }
+
+        private void BtnDownload_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

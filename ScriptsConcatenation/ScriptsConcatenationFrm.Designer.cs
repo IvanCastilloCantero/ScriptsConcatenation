@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             this.ScriptsBrowser = new System.Windows.Forms.OpenFileDialog();
-            this.BtnBrowse = new System.Windows.Forms.Button();
-            this.ScriptsPath = new System.Windows.Forms.TextBox();
+            this.BtnAdd = new System.Windows.Forms.Button();
             this.BtnConcat = new System.Windows.Forms.Button();
-            this.GeneratedFileDescription = new System.Windows.Forms.RichTextBox();
             this.BtnDownload = new System.Windows.Forms.Button();
+            this.ScriptsList = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.BtnDelete = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ScriptsBrowser
@@ -41,43 +42,26 @@
             this.ScriptsBrowser.Filter = "Sql script file|*.sql";
             this.ScriptsBrowser.Multiselect = true;
             // 
-            // BtnBrowse
+            // BtnAdd
             // 
-            this.BtnBrowse.Location = new System.Drawing.Point(41, 53);
-            this.BtnBrowse.Name = "BtnBrowse";
-            this.BtnBrowse.Size = new System.Drawing.Size(53, 23);
-            this.BtnBrowse.TabIndex = 0;
-            this.BtnBrowse.Text = "Browse";
-            this.BtnBrowse.UseVisualStyleBackColor = true;
-            this.BtnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-            // 
-            // ScriptsPath
-            // 
-            this.ScriptsPath.Location = new System.Drawing.Point(118, 55);
-            this.ScriptsPath.Name = "ScriptsPath";
-            this.ScriptsPath.ReadOnly = true;
-            this.ScriptsPath.Size = new System.Drawing.Size(252, 20);
-            this.ScriptsPath.TabIndex = 1;
+            this.BtnAdd.Location = new System.Drawing.Point(99, 172);
+            this.BtnAdd.Name = "BtnAdd";
+            this.BtnAdd.Size = new System.Drawing.Size(84, 23);
+            this.BtnAdd.TabIndex = 0;
+            this.BtnAdd.Text = "Add scripts";
+            this.BtnAdd.UseVisualStyleBackColor = true;
+            this.BtnAdd.Click += new System.EventHandler(this.BtnBrowse_Click);
             // 
             // BtnConcat
             // 
             this.BtnConcat.Enabled = false;
-            this.BtnConcat.Location = new System.Drawing.Point(164, 137);
+            this.BtnConcat.Location = new System.Drawing.Point(164, 213);
             this.BtnConcat.Name = "BtnConcat";
             this.BtnConcat.Size = new System.Drawing.Size(75, 23);
             this.BtnConcat.TabIndex = 2;
             this.BtnConcat.Text = "Concat";
             this.BtnConcat.UseVisualStyleBackColor = true;
-            // 
-            // GeneratedFileDescription
-            // 
-            this.GeneratedFileDescription.Enabled = false;
-            this.GeneratedFileDescription.Location = new System.Drawing.Point(41, 166);
-            this.GeneratedFileDescription.Name = "GeneratedFileDescription";
-            this.GeneratedFileDescription.ReadOnly = true;
-            this.GeneratedFileDescription.Size = new System.Drawing.Size(329, 96);
-            this.GeneratedFileDescription.TabIndex = 3;
-            this.GeneratedFileDescription.Text = "";
+            this.BtnConcat.Click += new System.EventHandler(this.BtnConcat_Click);
             // 
             // BtnDownload
             // 
@@ -88,32 +72,63 @@
             this.BtnDownload.TabIndex = 4;
             this.BtnDownload.Text = "Download";
             this.BtnDownload.UseVisualStyleBackColor = true;
+            this.BtnDownload.Click += new System.EventHandler(this.BtnDownload_Click);
+            // 
+            // ScriptsList
+            // 
+            this.ScriptsList.Activation = System.Windows.Forms.ItemActivation.OneClick;
+            this.ScriptsList.Alignment = System.Windows.Forms.ListViewAlignment.Default;
+            this.ScriptsList.CausesValidation = false;
+            this.ScriptsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+            this.ScriptsList.GridLines = true;
+            this.ScriptsList.HideSelection = false;
+            this.ScriptsList.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.ScriptsList.Location = new System.Drawing.Point(12, 12);
+            this.ScriptsList.Name = "ScriptsList";
+            this.ScriptsList.ShowItemToolTips = true;
+            this.ScriptsList.Size = new System.Drawing.Size(377, 144);
+            this.ScriptsList.TabIndex = 5;
+            this.ScriptsList.TileSize = new System.Drawing.Size(300, 20);
+            this.ScriptsList.UseCompatibleStateImageBehavior = false;
+            this.ScriptsList.View = System.Windows.Forms.View.Details;
+            // 
+            // BtnDelete
+            // 
+            this.BtnDelete.Enabled = false;
+            this.BtnDelete.Location = new System.Drawing.Point(232, 172);
+            this.BtnDelete.Name = "BtnDelete";
+            this.BtnDelete.Size = new System.Drawing.Size(84, 23);
+            this.BtnDelete.TabIndex = 6;
+            this.BtnDelete.Text = "Delete scripts";
+            this.BtnDelete.UseVisualStyleBackColor = true;
+            this.BtnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
             // 
             // ScriptsConcatenationFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(401, 307);
+            this.Controls.Add(this.BtnDelete);
+            this.Controls.Add(this.ScriptsList);
             this.Controls.Add(this.BtnDownload);
-            this.Controls.Add(this.GeneratedFileDescription);
             this.Controls.Add(this.BtnConcat);
-            this.Controls.Add(this.ScriptsPath);
-            this.Controls.Add(this.BtnBrowse);
+            this.Controls.Add(this.BtnAdd);
             this.Name = "ScriptsConcatenationFrm";
             this.Text = "Scripts Concatenator";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.OpenFileDialog ScriptsBrowser;
-        private System.Windows.Forms.Button BtnBrowse;
-        private System.Windows.Forms.TextBox ScriptsPath;
+        private System.Windows.Forms.Button BtnAdd;
         private System.Windows.Forms.Button BtnConcat;
-        private System.Windows.Forms.RichTextBox GeneratedFileDescription;
         private System.Windows.Forms.Button BtnDownload;
+        private System.Windows.Forms.ListView ScriptsList;
+        private System.Windows.Forms.Button BtnDelete;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
     }
 }
 
