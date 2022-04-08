@@ -64,7 +64,7 @@ namespace ScriptsConcatenation
         {
             for (int i = 0; i < _scripts.Count; i++)
             {
-                if (script.ScriptName == Scripts[i].ScriptName)
+                if (script.ScriptNameComplete.Equals(_scripts[i].ScriptNameComplete))
                 {
                     _scripts.RemoveAt(i);
                 }

@@ -26,8 +26,6 @@ namespace ScriptsConcatenation
             EnableButtons();
         }
 
-        
-
         private void EnableButtons()
         {
             this.BtnDelete.Enabled = true;

@@ -93,8 +93,8 @@
             this.ScriptsList.TileSize = new System.Drawing.Size(300, 20);
             this.ScriptsList.UseCompatibleStateImageBehavior = false;
             this.ScriptsList.View = System.Windows.Forms.View.Details;
-            this.ScriptsList.Columns[0].Text = "Scripts";
             this.ScriptsList.Columns[0].Width = 377;
+            this.ScriptsList.Columns[0].Text = "Scripts";
             // 
             // BtnDelete
             // 
