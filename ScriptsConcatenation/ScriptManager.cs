@@ -5,14 +5,24 @@ using System.Text;
 
 namespace ScriptsConcatenation
 {
-    public class ConcatenationMethods
+    public class ScriptManager
     {
-        //private Dictionary<string, string> _scripts = new Dictionary<string, string>();
-        public static void ConcatScripts()
+        public List<Script> Scripts = new List<Script>();
+        public Script ScriptConcated;
+        public List<ScriptNameSplit> ScriptsSplited = new List<ScriptNameSplit>();
+
+        public ScriptManager()
         {
-            Script scriptConcated = new Script();
+            Scripts = new List<Script>();
+            ScriptConcated = new Script();
+            ScriptsSplited = new List<ScriptNameSplit>();
+
+        }
+
+        public void ConcatScripts()
+        {
             StringBuilder sb = new StringBuilder();
-            foreach (Script script in Data.scripts)
+            foreach (Script script in Scripts)
             {
                 sb.Append("--");
                 sb.Append(script.ScriptName);
@@ -22,16 +32,17 @@ namespace ScriptsConcatenation
                 sb.Append("GO");
                 sb.Append("/n");
             }
-            Data.ScriptConcated = scriptConcated;
+            ScriptConcated.ScriptContent = sb.ToString();
+            ScriptConcated.ScriptName = "generatedScript.sql";
         }
 
-        public static void DeleteSelectedItemsFromScriptList(Script script)
+        public void DeleteSelectedItemsFromScriptList(Script script)
         {
-            for (int i = 0; i < Data.scripts.Count; i++)
+            for (int i = 0; i < Scripts.Count; i++)
             {
-                if (script.ScriptName == Data.scripts[i].ScriptName)
+                if (script.ScriptName == Scripts[i].ScriptName)
                 {
-                    Data.scripts.RemoveAt(i);
+                    Scripts.RemoveAt(i);
                 }
             }
         }
@@ -45,7 +56,8 @@ namespace ScriptsConcatenation
                 StreamReader reader = new StreamReader(stream);
                 string scriptContent = reader.ReadToEnd();
                 Script script = new Script(scriptContent, scriptName);
-                Data.scripts.Add(script);
+                Console.WriteLine(script.ScriptName);
+                Scripts.Add(script);
             }
         }
 
@@ -55,7 +67,7 @@ namespace ScriptsConcatenation
             return splittedUrl[splittedUrl.Length - 1];
         }
 
-        public static void SplitScriptName(string[] scripts)
+        public void SplitScriptName(string[] scripts)
         {
             foreach (string scriptName in scripts)
             {
@@ -64,17 +76,17 @@ namespace ScriptsConcatenation
             }
         }
 
-        internal static void AddScriptsNameSplitedToList(string[] scriptSplitedArray)
+        internal void AddScriptsNameSplitedToList(string[] scriptSplitedArray)
         {
             if (scriptSplitedArray.Length == 2)
             {
                 ScriptNameSplit scriptSplited = new ScriptNameSplit(scriptSplitedArray[0], scriptSplitedArray[1]);
-                Data.scriptsSplited.Add(scriptSplited);
+                ScriptsSplited.Add(scriptSplited);
             }
             else
             {
                 ScriptNameSplit scriptSplited = new ScriptNameSplit(scriptSplitedArray[0], scriptSplitedArray[1], scriptSplitedArray[2]);
-                Data.scriptsSplited.Add(scriptSplited);
+                ScriptsSplited.Add(scriptSplited);
             }
         }
     }

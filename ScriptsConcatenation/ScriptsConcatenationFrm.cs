@@ -8,10 +8,14 @@ using System.Windows.Forms;
 namespace ScriptsConcatenation
 {
     public partial class ScriptsConcatenationFrm : Form
-    {        
+    {
+
+        private ScriptManager _scriptManager;
+
         public ScriptsConcatenationFrm() 
         {
             InitializeComponent();
+            _scriptManager = new ScriptManager();
         }
 
         private void BtnBrowse_Click(object sender, EventArgs e)
@@ -32,8 +36,7 @@ namespace ScriptsConcatenation
 
         private void AddScriptsToListView()
         {
-            ConcatenationMethods concatenationMethods = new ConcatenationMethods();
-            concatenationMethods.AddScript(this.ScriptsBrowser.FileNames);
+            _scriptManager.AddScript(this.ScriptsBrowser.FileNames);
             foreach (string scriptName in ScriptsBrowser.SafeFileNames)
             {
                 ScriptsList.Items.Add(scriptName);
@@ -71,21 +74,33 @@ namespace ScriptsConcatenation
                     ScriptName = listViewItem.Text
                 };
                 listViewItem.Remove();
-                ConcatenationMethods.DeleteSelectedItemsFromScriptList(script);
+                _scriptManager.DeleteSelectedItemsFromScriptList(script);
                 
             }
         }
 
         private void BtnConcat_Click(object sender, EventArgs e)
         {
-            ConcatenationMethods.ConcatScripts();
+            _scriptManager.ConcatScripts();
             BtnDownload.Enabled = true;
             MessageBox.Show("Scripts concated succesfully");
         }
 
         private void BtnDownload_Click(object sender, EventArgs e)
         {
+            if (FolderBrowser.ShowDialog() == DialogResult.OK)
+            {
+                DownloadScript();
+            } 
+            else
+            {
+                MessageBox.Show("You must choose a folder");
+            }
+        }
 
+        private void DownloadScript()
+        {
+            File.WriteAllText(FolderBrowser.SelectedPath, _scriptManager.ScriptConcated.ScriptContent);
         }
     }
 }

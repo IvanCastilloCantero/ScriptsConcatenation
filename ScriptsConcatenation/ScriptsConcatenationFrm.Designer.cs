@@ -35,6 +35,7 @@
             this.ScriptsList = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.BtnDelete = new System.Windows.Forms.Button();
+            this.FolderBrowser = new System.Windows.Forms.FolderBrowserDialog();
             this.SuspendLayout();
             // 
             // ScriptsBrowser
@@ -129,6 +130,7 @@
         private System.Windows.Forms.ListView ScriptsList;
         private System.Windows.Forms.Button BtnDelete;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.FolderBrowserDialog FolderBrowser;
     }
 }
 

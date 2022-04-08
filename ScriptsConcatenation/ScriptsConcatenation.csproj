@@ -46,8 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data.cs" />
-    <Compile Include="ConcatenationMethods.cs" />
+    <Compile Include="ScriptManager.cs" />
     <Compile Include="Script.cs" />
     <Compile Include="ScriptNameSplit.cs" />
     <Compile Include="ScriptsConcatenationFrm.cs">
