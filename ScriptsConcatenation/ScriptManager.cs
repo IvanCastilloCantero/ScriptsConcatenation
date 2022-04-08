@@ -1,48 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace ScriptsConcatenation
 {
     public class ScriptManager
     {
-        public List<Script> Scripts = new List<Script>();
-        public Script ScriptConcated;
-        public List<ScriptNameSplit> ScriptsSplited = new List<ScriptNameSplit>();
+        private readonly List<Script> _scripts;
+        private Script _scriptConcated;
+        private readonly List<string> _scriptsNameIncorrect;
 
         public ScriptManager()
         {
-            Scripts = new List<Script>();
-            ScriptConcated = new Script();
-            ScriptsSplited = new List<ScriptNameSplit>();
+            _scripts = new List<Script>();
+            _scriptsNameIncorrect = new List<string>();
+        }
 
+        public List<Script> Scripts
+        {
+            get
+            {
+                return _scripts;
+            }
+        }
+
+        public Script ScriptConcated
+        {
+            get
+            {
+                return _scriptConcated;
+            }
+        }
+
+        public List<string> ScriptsNameIncorrect
+        {
+            get
+            {
+                return _scriptsNameIncorrect;
+            }
         }
 
         public void ConcatScripts()
         {
+            this._scriptConcated = new Script();
             StringBuilder sb = new StringBuilder();
             foreach (Script script in Scripts)
             {
                 sb.Append("--");
-                sb.Append(script.ScriptName);
-                sb.Append("/n");
+                sb.Append(script.ScriptNameComplete);
+                sb.Append("\n");
                 sb.Append(script.ScriptContent);
-                sb.Append("/n");
+                sb.Append("\n");
                 sb.Append("GO");
-                sb.Append("/n");
+                sb.Append("\n");
             }
-            ScriptConcated.ScriptContent = sb.ToString();
-            ScriptConcated.ScriptName = "generatedScript.sql";
+            _scriptConcated.ScriptContent = sb.ToString();
+            _scriptConcated.ScriptName = "generatedScript.sql";
         }
 
         public void DeleteSelectedItemsFromScriptList(Script script)
         {
-            for (int i = 0; i < Scripts.Count; i++)
+            for (int i = 0; i < _scripts.Count; i++)
             {
                 if (script.ScriptName == Scripts[i].ScriptName)
                 {
-                    Scripts.RemoveAt(i);
+                    _scripts.RemoveAt(i);
                 }
             }
         }
@@ -51,14 +75,92 @@ namespace ScriptsConcatenation
         {
             foreach (string url in urls)
             {
-                var scriptName = GetName(url);
                 var stream = File.OpenRead(url);
                 StreamReader reader = new StreamReader(stream);
-                string scriptContent = reader.ReadToEnd();
-                Script script = new Script(scriptContent, scriptName);
-                Console.WriteLine(script.ScriptName);
-                Scripts.Add(script);
+                Script script = new Script
+                {
+                    ScriptNameComplete = GetName(url),
+                    ScriptContent = reader.ReadToEnd()
+                };
+                CheckScriptsVersion(script);
             }
+        }
+
+        private void CheckScriptsVersion(Script script)
+        {
+            Script scriptComplete = SplitScriptName(script);
+            bool incorrectFormat = CheckIncorrectFormat(scriptComplete);
+            if (!incorrectFormat)
+            {
+                CheckScriptsVersionCorrectFormat(scriptComplete);
+            }
+            
+            
+        }
+
+        private void CheckScriptsVersionCorrectFormat(Script scriptComplete)
+        {
+            bool existsWithNumVersionHigher = false;
+            foreach (Script scriptIterator in _scripts)
+            {
+                Script scriptIteratorComplete = SplitScriptName(scriptIterator);
+                if (scriptComplete.ScriptName.Equals(scriptIteratorComplete.ScriptName) &&
+                    scriptComplete.NumScript.Equals(scriptIteratorComplete.NumScript))
+                {
+                    existsWithNumVersionHigher = CheckScriptVersionHigher(scriptComplete, scriptIteratorComplete);
+                }
+            }
+            CheckAddScript(scriptComplete, existsWithNumVersionHigher);
+        }
+
+        private void CheckAddScript(Script scriptComplete, bool existsWithNumVersionHigher)
+        {
+            if (!existsWithNumVersionHigher)
+            {
+                _scripts.Add(scriptComplete);
+            }
+        }
+
+        private bool CheckIncorrectFormat(Script scriptComplete)
+        {
+            bool incorrectFormat = false;
+            foreach (string scriptNameIncorrect in _scriptsNameIncorrect)
+            {
+                if (scriptComplete.ScriptNameComplete.Equals(scriptNameIncorrect))
+                {
+                    incorrectFormat = true;
+                }
+            }
+            return incorrectFormat;
+            
+        }
+
+        private bool CheckScriptVersionHigher(Script scriptComplete, Script scriptIteratorComplete)
+        {
+            bool existsWithNumVersionHigher = false;
+            if (Convert.ToInt32(scriptComplete.NumVersion) < Convert.ToInt32(scriptIteratorComplete.NumVersion) ||
+                scriptComplete.ScriptNameComplete.Equals(scriptIteratorComplete.ScriptNameComplete))
+            {
+                existsWithNumVersionHigher = true;
+            }
+            else
+            {
+                ScriptVersionLower(scriptComplete, scriptIteratorComplete);
+            }
+            return existsWithNumVersionHigher;
+        }
+
+        private void ScriptVersionLower(Script scriptComplete, Script scriptIteratorComplete)
+        {
+            Script scriptCompletePreviousVersion = new Script()
+            {
+                ScriptNameComplete = scriptIteratorComplete.ScriptNameComplete,
+                ScriptContent = scriptComplete.ScriptContent,
+                NumScript = scriptIteratorComplete.NumScript,
+                NumVersion = (Convert.ToInt32(scriptComplete.NumVersion) - 1).ToString(),
+                ScriptName = scriptIteratorComplete.ScriptName
+            };
+            _scripts.Remove(scriptCompletePreviousVersion);
         }
 
         private string GetName(string url)
@@ -67,27 +169,46 @@ namespace ScriptsConcatenation
             return splittedUrl[splittedUrl.Length - 1];
         }
 
-        public void SplitScriptName(string[] scripts)
+        public Script SplitScriptName(Script scriptIncomplete)
         {
-            foreach (string scriptName in scripts)
+            var scriptComplete = scriptIncomplete;
+            string[] scriptSplitedArray = scriptComplete.ScriptNameComplete.Split('.');
+            switch (scriptSplitedArray.Length)
             {
-                string[] scriptSplitedArray = scriptName.Split('.');
-                AddScriptsNameSplitedToList(scriptSplitedArray);
+                case 3:
+                    scriptComplete.NumScript = scriptSplitedArray[0];
+                    scriptComplete.NumVersion = "0";
+                    scriptComplete.ScriptName = scriptSplitedArray[1];
+                    break;
+                case 4:
+                    scriptComplete.NumScript = scriptSplitedArray[0];
+                    scriptComplete.NumVersion = scriptSplitedArray[1];
+                    scriptComplete.ScriptName = scriptSplitedArray[2];
+                    break;
+                default:
+                    _scriptsNameIncorrect.Add(scriptComplete.ScriptNameComplete);
+                    break;
             }
+            return scriptComplete;
         }
 
-        internal void AddScriptsNameSplitedToList(string[] scriptSplitedArray)
+        public string ShowScriptsWithIncorrectFormat()
         {
-            if (scriptSplitedArray.Length == 2)
+            StringBuilder scriptsIncorrectFormat = new StringBuilder();
+            foreach (string scriptNameIncorrect in _scriptsNameIncorrect)
             {
-                ScriptNameSplit scriptSplited = new ScriptNameSplit(scriptSplitedArray[0], scriptSplitedArray[1]);
-                ScriptsSplited.Add(scriptSplited);
+                scriptsIncorrectFormat.Append("\n");
+                scriptsIncorrectFormat.Append(scriptNameIncorrect); 
             }
-            else
+            return scriptsIncorrectFormat.ToString();
+        }
+
+        public void WriteScript(string Path)
+        {
+            using (StreamWriter sw = File.CreateText(Path + "\\" + _scriptConcated.ScriptName))
             {
-                ScriptNameSplit scriptSplited = new ScriptNameSplit(scriptSplitedArray[0], scriptSplitedArray[1], scriptSplitedArray[2]);
-                ScriptsSplited.Add(scriptSplited);
-            }
+                sw.Write(_scriptConcated.ScriptContent);
+            };
         }
     }
 }

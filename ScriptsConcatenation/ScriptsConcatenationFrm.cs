@@ -1,32 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace ScriptsConcatenation
 {
     public partial class ScriptsConcatenationFrm : Form
     {
+        private readonly ScriptManager _scriptManager;
 
-        private ScriptManager _scriptManager;
-
-        public ScriptsConcatenationFrm() 
+        public ScriptsConcatenationFrm()
         {
             InitializeComponent();
             _scriptManager = new ScriptManager();
         }
 
-        private void BtnBrowse_Click(object sender, EventArgs e)
+        private void BtnAdd_Click(object sender, EventArgs e)
         {
             if (ScriptsBrowser.ShowDialog(this) == DialogResult.OK)
             {
                 AddScriptsToListView();
             }
+            if (_scriptManager.ScriptsNameIncorrect.Count > 0)
+            {
+                MessageBox.Show("The following scripts aren't in the correct format:" + _scriptManager.ShowScriptsWithIncorrectFormat());
+            }
             EnableButtons();
         }
 
+        
 
         private void EnableButtons()
         {
@@ -36,10 +36,11 @@ namespace ScriptsConcatenation
 
         private void AddScriptsToListView()
         {
+            ScriptsList.Items.Clear();
             _scriptManager.AddScript(this.ScriptsBrowser.FileNames);
-            foreach (string scriptName in ScriptsBrowser.SafeFileNames)
+            foreach (Script script in _scriptManager.Scripts)
             {
-                ScriptsList.Items.Add(scriptName);
+                ScriptsList.Items.Add(script.ScriptNameComplete);
             }
         }
 
@@ -48,7 +49,7 @@ namespace ScriptsConcatenation
             if (ScriptsList.SelectedItems.Count > 0)
             {
                 DeleteSelectedElements();
-            } 
+            }
             else
             {
                 MessageBox.Show("Select at least one item in the list to delete it");
@@ -71,11 +72,11 @@ namespace ScriptsConcatenation
             {
                 Script script = new Script
                 {
-                    ScriptName = listViewItem.Text
+                    ScriptNameComplete = listViewItem.Text
                 };
                 listViewItem.Remove();
                 _scriptManager.DeleteSelectedItemsFromScriptList(script);
-                
+
             }
         }
 
@@ -90,17 +91,13 @@ namespace ScriptsConcatenation
         {
             if (FolderBrowser.ShowDialog() == DialogResult.OK)
             {
-                DownloadScript();
-            } 
+                _scriptManager.WriteScript(FolderBrowser.SelectedPath);
+                MessageBox.Show("Script downloaded in " + FolderBrowser.SelectedPath + "\\" + _scriptManager.ScriptConcated.ScriptNameComplete);
+            }
             else
             {
                 MessageBox.Show("You must choose a folder");
             }
-        }
-
-        private void DownloadScript()
-        {
-            File.WriteAllText(FolderBrowser.SelectedPath, _scriptManager.ScriptConcated.ScriptContent);
         }
     }
 }

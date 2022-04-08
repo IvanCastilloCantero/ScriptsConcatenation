@@ -48,7 +48,6 @@
   <ItemGroup>
     <Compile Include="ScriptManager.cs" />
     <Compile Include="Script.cs" />
-    <Compile Include="ScriptNameSplit.cs" />
     <Compile Include="ScriptsConcatenationFrm.cs">
       <SubType>Form</SubType>
     </Compile>

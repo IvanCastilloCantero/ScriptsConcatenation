@@ -7,19 +7,25 @@ namespace ScriptsConcatenationTest
     public class ScriptsConcatenationTest
     {
 
-        [Fact]
+        /*[Fact]
         public void Script_Name_Split_Test()
         {
-            string[] scripts = new string[] { "1.prueba", "1.2.prueba", "2.prueba2" };
+            string[] scripts = new string[] { "1.prueba", "1.2.prueba", "2.prueba2", "pruebaMal" };
             ScriptManager scriptManager = new();
-            scriptManager.SplitScriptName(scripts);
+            scriptManager.AddSplitedScriptToList(scripts);
 
-            scriptManager.ScriptsSplited[0].Should().BeEquivalentTo(new ScriptNameSplit("1", "prueba"));
-            scriptManager.ScriptsSplited[1].Should().BeEquivalentTo(new ScriptNameSplit("1", "2", "prueba"));
-            scriptManager.ScriptsSplited[2].Should().BeEquivalentTo(new ScriptNameSplit("2", "prueba2"));
-        }
+            scriptManager.ScriptsSplited[0].NScript.Should().Be("1");
+            scriptManager.ScriptsSplited[0].ScriptName.Should().Be("prueba");
+            scriptManager.ScriptsSplited[1].NScript.Should().Be("1");
+            scriptManager.ScriptsSplited[1].NVersion.Should().Be("2");
+            scriptManager.ScriptsSplited[1].ScriptName.Should().Be("prueba");
+            scriptManager.ScriptsSplited[2].NScript.Should().Be("2");
+            scriptManager.ScriptsSplited[2].ScriptName.Should().Be("prueba2");
+            scriptManager.ScriptsWithIncorrectFormat.Should().Be(1);
 
-        [Fact]
+        }*/
+
+        /*[Fact]
         public void Add_Scripts_Test() 
         {
             string[] urls = new string[] { "C:\\Users\\Ivancc\\Documents\\scripts sql de prueba\\05.tipo_contrato_prestador.sql", "C:\\Users\\Ivancc\\Documents\\scripts sql de prueba\\10.guardar_vistas_tipo_contrato_prestador.sql" };
@@ -61,6 +67,6 @@ namespace ScriptsConcatenationTest
             scriptManager.ConcatScripts();
 
             scriptManager.ScriptConcated.ScriptName.Should().Be("generatedScript.sql");
-        }
+        }*/
     }
 }

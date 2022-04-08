@@ -8,18 +8,11 @@ namespace ScriptsConcatenation
 {
     public class Script
     {
-        public string ScriptContent;
-        public string ScriptName;
+        public string ScriptContent { get; set; }
+        public string ScriptNameComplete { get; set; }
+        public string NumScript { get; set; }
+        public string NumVersion { get; set; }
+        public string ScriptName { get; set; }
 
-        public Script()
-        {
-
-        }
-
-        public Script(string scripContent, String scriptName)
-        {
-            ScriptContent = scripContent;
-            ScriptName = scriptName;
-        }
     }
 }

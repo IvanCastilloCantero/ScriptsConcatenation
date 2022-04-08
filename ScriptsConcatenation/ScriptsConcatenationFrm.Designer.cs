@@ -51,7 +51,7 @@
             this.BtnAdd.TabIndex = 0;
             this.BtnAdd.Text = "Add scripts";
             this.BtnAdd.UseVisualStyleBackColor = true;
-            this.BtnAdd.Click += new System.EventHandler(this.BtnBrowse_Click);
+            this.BtnAdd.Click += new System.EventHandler(this.BtnAdd_Click);
             // 
             // BtnConcat
             // 
@@ -93,6 +93,8 @@
             this.ScriptsList.TileSize = new System.Drawing.Size(300, 20);
             this.ScriptsList.UseCompatibleStateImageBehavior = false;
             this.ScriptsList.View = System.Windows.Forms.View.Details;
+            this.ScriptsList.Columns[0].Text = "Scripts";
+            this.ScriptsList.Columns[0].Width = 377;
             // 
             // BtnDelete
             // 
