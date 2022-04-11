@@ -97,8 +97,7 @@ namespace ScriptsConcatenation
         private void CheckScriptsVersion(Script script)
         {
             var scriptComplete = SplitScriptName(script);
-            var incorrectFormat = CheckIncorrectFormat(scriptComplete);
-            if (!incorrectFormat)
+            if (!ScriptsNameIncorrectContains(scriptComplete.ScriptNameComplete))
             {
                 CheckScriptsVersionCorrectFormat(scriptComplete);
             }
@@ -124,13 +123,6 @@ namespace ScriptsConcatenation
             {
                 _scripts.Add(scriptComplete);
             }
-        }
-
-        private bool CheckIncorrectFormat(Script scriptComplete)
-        {
-            return ScriptsNameIncorrectContains(scriptComplete.ScriptNameComplete)
-                ? true
-                : false;
         }
 
         private bool ScriptsNameIncorrectContains(string scriptName)
