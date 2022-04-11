@@ -44,9 +44,9 @@ namespace ScriptsConcatenation
 
         public void ConcatScripts()
         {
-            this._scriptConcated = new Script();
-            StringBuilder sb = new StringBuilder();
-            foreach (Script script in Scripts)
+            _scriptConcated = new Script();
+            var sb = new StringBuilder();
+            foreach (var script in Scripts)
             {
                 sb.Append("--");
                 sb.Append(script.ScriptNameComplete);
@@ -62,7 +62,7 @@ namespace ScriptsConcatenation
 
         public void DeleteSelectedItemsFromScriptList(Script script)
         {
-            for (int i = 0; i < _scripts.Count; i++)
+            for (var i = 0; i < _scripts.Count; i++)
             {
                 if (script.ScriptNameComplete.Equals(_scripts[i].ScriptNameComplete))
                 {
@@ -73,41 +73,46 @@ namespace ScriptsConcatenation
 
         public void AddScript(string[] urls)
         {
-            foreach (string url in urls)
+            foreach (var url in urls)
             {
                 var stream = File.OpenRead(url);
-                StreamReader reader = new StreamReader(stream);
-                Script script = new Script
+                var reader = new StreamReader(stream);
+                var script = new Script()
                 {
                     ScriptNameComplete = GetName(url),
                     ScriptContent = reader.ReadToEnd()
                 };
-                CheckScriptsVersion(script);
+                if (!ScriptsContains(script) && !ScriptsNameIncorrectContains(script.ScriptNameComplete))
+                {
+                    CheckScriptsVersion(script);
+                }
             }
+        }
+
+        private bool ScriptsContains(Script script)
+        {
+            return _scripts.Where(x => x.ScriptNameComplete.Equals(script.ScriptNameComplete)).Any();
         }
 
         private void CheckScriptsVersion(Script script)
         {
-            Script scriptComplete = SplitScriptName(script);
-            bool incorrectFormat = CheckIncorrectFormat(scriptComplete);
+            var scriptComplete = SplitScriptName(script);
+            var incorrectFormat = CheckIncorrectFormat(scriptComplete);
             if (!incorrectFormat)
             {
                 CheckScriptsVersionCorrectFormat(scriptComplete);
             }
-            
-            
         }
 
         private void CheckScriptsVersionCorrectFormat(Script scriptComplete)
         {
-            bool existsWithNumVersionHigher = false;
-            foreach (Script scriptIterator in _scripts)
+            var existsWithNumVersionHigher = false;
+            for (int i = 0; i < _scripts.Count(); i++)
             {
-                Script scriptIteratorComplete = SplitScriptName(scriptIterator);
-                if (scriptComplete.ScriptName.Equals(scriptIteratorComplete.ScriptName) &&
-                    scriptComplete.NumScript.Equals(scriptIteratorComplete.NumScript))
+                if (scriptComplete.ScriptName.Equals(_scripts[i].ScriptName) &&
+                    scriptComplete.NumScript.Equals(_scripts[i].NumScript))
                 {
-                    existsWithNumVersionHigher = CheckScriptVersionHigher(scriptComplete, scriptIteratorComplete);
+                    existsWithNumVersionHigher = CheckScriptVersionHigher(scriptComplete, _scripts[i]);
                 }
             }
             CheckAddScript(scriptComplete, existsWithNumVersionHigher);
@@ -123,44 +128,54 @@ namespace ScriptsConcatenation
 
         private bool CheckIncorrectFormat(Script scriptComplete)
         {
-            bool incorrectFormat = false;
-            foreach (string scriptNameIncorrect in _scriptsNameIncorrect)
-            {
-                if (scriptComplete.ScriptNameComplete.Equals(scriptNameIncorrect))
-                {
-                    incorrectFormat = true;
-                }
-            }
-            return incorrectFormat;
-            
+            return ScriptsNameIncorrectContains(scriptComplete.ScriptNameComplete)
+                ? true
+                : false;
         }
 
-        private bool CheckScriptVersionHigher(Script scriptComplete, Script scriptIteratorComplete)
+        private bool ScriptsNameIncorrectContains(string scriptName)
         {
-            bool existsWithNumVersionHigher = false;
-            if (Convert.ToInt32(scriptComplete.NumVersion) < Convert.ToInt32(scriptIteratorComplete.NumVersion) ||
-                scriptComplete.ScriptNameComplete.Equals(scriptIteratorComplete.ScriptNameComplete))
+            return _scriptsNameIncorrect.Where(x => x.Equals(scriptName)).Any();
+        }
+
+        private bool CheckScriptVersionHigher(Script scriptComplete, Script scriptIterator)
+        {
+            var existsWithNumVersionHigher = false;
+            if (Convert.ToInt32(scriptComplete.NumVersion) < Convert.ToInt32(scriptIterator.NumVersion) ||
+                scriptComplete.ScriptNameComplete.Equals(scriptIterator.ScriptNameComplete))
             {
                 existsWithNumVersionHigher = true;
             }
             else
             {
-                ScriptVersionLower(scriptComplete, scriptIteratorComplete);
+                ScriptVersionLower(scriptComplete, scriptIterator);
             }
             return existsWithNumVersionHigher;
         }
 
         private void ScriptVersionLower(Script scriptComplete, Script scriptIteratorComplete)
         {
-            Script scriptCompletePreviousVersion = new Script()
+            var versionDiference = Convert.ToInt32(scriptComplete.NumVersion) - Convert.ToInt32(scriptIteratorComplete.NumVersion);
+            var scriptCompletePreviousVersion = new Script()
             {
-                ScriptNameComplete = scriptIteratorComplete.ScriptNameComplete,
                 ScriptContent = scriptComplete.ScriptContent,
                 NumScript = scriptIteratorComplete.NumScript,
-                NumVersion = (Convert.ToInt32(scriptComplete.NumVersion) - 1).ToString(),
+                NumVersion = (Convert.ToInt32(scriptComplete.NumVersion) - versionDiference).ToString(),
                 ScriptName = scriptIteratorComplete.ScriptName
             };
-            _scripts.Remove(scriptCompletePreviousVersion);
+            scriptCompletePreviousVersion.ScriptNameComplete = scriptCompletePreviousVersion.NumScript + "." + scriptCompletePreviousVersion.NumVersion + "." + scriptCompletePreviousVersion.ScriptName + ".sql";
+            ScriptVersionLowerDelete(scriptCompletePreviousVersion);
+        }
+
+        private void ScriptVersionLowerDelete(Script scriptCompletePreviousVersion)
+        {
+            for (int i = 0; i < _scripts.Count(); i++)
+            {
+                if (_scripts[i].ScriptNameComplete.Equals(scriptCompletePreviousVersion.ScriptNameComplete))
+                {
+                    _scripts.Remove(_scripts[i]);
+                }
+            };
         }
 
         private string GetName(string url)
@@ -172,7 +187,7 @@ namespace ScriptsConcatenation
         public Script SplitScriptName(Script scriptIncomplete)
         {
             var scriptComplete = scriptIncomplete;
-            string[] scriptSplitedArray = scriptComplete.ScriptNameComplete.Split('.');
+            var scriptSplitedArray = scriptComplete.ScriptNameComplete.Split('.');
             switch (scriptSplitedArray.Length)
             {
                 case 3:
@@ -194,18 +209,18 @@ namespace ScriptsConcatenation
 
         public string ShowScriptsWithIncorrectFormat()
         {
-            StringBuilder scriptsIncorrectFormat = new StringBuilder();
-            foreach (string scriptNameIncorrect in _scriptsNameIncorrect)
+            var scriptsIncorrectFormat = new StringBuilder();
+            foreach (var scriptNameIncorrect in _scriptsNameIncorrect)
             {
                 scriptsIncorrectFormat.Append("\n");
-                scriptsIncorrectFormat.Append(scriptNameIncorrect); 
+                scriptsIncorrectFormat.Append(scriptNameIncorrect);
             }
             return scriptsIncorrectFormat.ToString();
         }
 
         public void WriteScript(string Path)
         {
-            using (StreamWriter sw = File.CreateText(Path + "\\" + _scriptConcated.ScriptName))
+            using (var sw = File.CreateText(Path + "\\" + _scriptConcated.ScriptName))
             {
                 sw.Write(_scriptConcated.ScriptContent);
             };

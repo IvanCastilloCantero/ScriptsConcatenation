@@ -22,6 +22,7 @@ namespace ScriptsConcatenation
             if (_scriptManager.ScriptsNameIncorrect.Count > 0)
             {
                 MessageBox.Show("The following scripts aren't in the correct format:" + _scriptManager.ShowScriptsWithIncorrectFormat());
+                _scriptManager.ScriptsNameIncorrect.Clear();
             }
             EnableButtons();
         }
@@ -82,7 +83,7 @@ namespace ScriptsConcatenation
         {
             _scriptManager.ConcatScripts();
             BtnDownload.Enabled = true;
-            MessageBox.Show("Scripts concated succesfully");
+            MessageBox.Show("Scripts concatenated succesfully");
         }
 
         private void BtnDownload_Click(object sender, EventArgs e)
@@ -90,7 +91,7 @@ namespace ScriptsConcatenation
             if (FolderBrowser.ShowDialog() == DialogResult.OK)
             {
                 _scriptManager.WriteScript(FolderBrowser.SelectedPath);
-                MessageBox.Show("Script downloaded in " + FolderBrowser.SelectedPath + "\\" + _scriptManager.ScriptConcated.ScriptNameComplete);
+                MessageBox.Show("Script downloaded at " + FolderBrowser.SelectedPath + "\\" + _scriptManager.ScriptConcated.ScriptNameComplete);
             }
             else
             {
